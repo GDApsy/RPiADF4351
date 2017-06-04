@@ -203,7 +203,7 @@ int32_t adf4350_write(uint32_t data)
 		digitalWrite(CLK_4351_GPIO, HIGH);
 		delay(1);
 		digitalWrite(CLK_4351_GPIO, LOW);
-		delay(1)
+		delay(1);
 		
 		// shift data left so next bit will be leftmost
 

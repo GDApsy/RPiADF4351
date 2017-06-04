@@ -61,7 +61,13 @@ uint32_t registers[6] =  {0x4580A8, 0x80080C9, 0x4E42, 0x4B3, 0xBC803C, 0x580005
 
 int main(int argc, char *argv[])
 {
-	if (wiringPiSetup() == -1);
+        if (argc<2){
+          printf("Usage programm: adf4351 -f ff.f -p p  where ff.f -- value of frequence for adf4351,p -- value ofpower for main out ");
+          return -1; 
+         } 
+
+	if (wiringPiSetup() == -1)
+            return -1;
 
 	if (strcmp(argv[1], "off") == 0)
 	{
@@ -71,22 +77,40 @@ int main(int argc, char *argv[])
 
 		return 0;
 	}
-	else if ( atof(argv[1])>=35 && atof(argv[1])<=4400 )
-	{
+        if(strcmp(argv[3], "-p") == 0)
+         {
+            if (atoi(argv[4])>=0 && atoi(argv[4])<=3)
+                  {
+                  MyAdf.output_power=atoi(argv[4]);
+                   
+                  }
+            else
+              {
+              printf("Incorrect power mode!");
+              return -1;
+              }
+         } 
+        if (strcmp(argv[1], "-f") == 0){
+           if ( atof(argv[2])>=35 && atof(argv[2])<=4400 )
+	    {
                 // Valid freq, so set it
-                uint32_t adf4350_requested_frequency = 1000000 * atof(argv[1]);
+                uint32_t adf4350_requested_frequency = 1000000 * atof(argv[2]);
 
-                adf4350_setup(0,0,MyAdf);
-                adf4350_out_altvoltage0_frequency(adf4350_requested_frequency);
+               adf4350_setup(0,0,MyAdf);
+               adf4350_out_altvoltage0_frequency(adf4350_requested_frequency);
 
+                printf("ADF4351  set to:\n Freq=%d Hz\n Power=%d mode\n",adf4350_requested_frequency, MyAdf.output_power); 
                 return 0;
-	}
-	else
-	{
+	      }
+	      else
+	      {
                 // Requested freq out of limits so print error and return 1
                 printf("ERROR: Requested Frequency out of limits");
 
                 return 1;
  
-	}
+	        }
+   }
+return 0;
 }
+
